@@ -180,10 +180,13 @@ def main() -> None:
     """Запуск бота."""
     config = Config.from_env()
 
+    async def post_init(app: Application) -> None:
+        app.bot_data["config"] = config
+
     app = (
         Application.builder()
         .token(config.telegram_bot_token)
-        .post_init(lambda app: app.bot_data.update({"config": config}))
+        .post_init(post_init)
         .build()
     )
 
