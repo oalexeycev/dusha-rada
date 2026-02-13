@@ -129,13 +129,14 @@ class SunoAPI:
             raise SunoAPIError(f"Генерация не удалась: {err_msg}")
 
         songs: list[SongResult] = []
-        suno_data = result.get("response", {}).get("sunoData", [])
+        response = result.get("response") or {}
+        suno_data = response.get("sunoData") or []
         for item in suno_data:
             songs.append(
                 SongResult(
                     id=item.get("id", ""),
                     title=item.get("title", "Unknown"),
-                    audio_url=item.get("audioUrl") or item.get("audio_url", ""),
+                    audio_url=item.get("audioUrl") or item.get("audio_url") or item.get("streamAudioUrl") or "",
                     prompt=item.get("prompt"),
                     tags=item.get("tags"),
                     duration=item.get("duration"),
